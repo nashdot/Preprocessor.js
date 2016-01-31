@@ -1,5 +1,5 @@
 {
-  "name": "preprocessor",
+  "name": "preprocessor.js",
   "version": "1.4.0",
   "author": "Daniel Wirtz <dcode@dcode.io>",
   "description": "Preprocessor.js: A JavaScript source file preprocessor",
