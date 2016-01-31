@@ -195,7 +195,7 @@
       inlineDefines = [];
     }
     var addSlashes = Preprocessor.addSlashes;
-    return (function(runtimeDefines, inlineDefines, expr) {
+    return function() {
       for (var key in runtimeDefines) {
         if (runtimeDefines.hasOwnProperty(key)) {
           eval('var ' + key + ' = "' + addSlashes('' + runtimeDefines[key]) + '";');
@@ -209,7 +209,7 @@
         eval(def);
       }
       return eval(expr);
-    }).bind(null)(runtimeDefines, inlineDefines, expr);
+    };
   };
 
   /**
