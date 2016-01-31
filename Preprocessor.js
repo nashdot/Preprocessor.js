@@ -258,6 +258,7 @@
                 var glob = require('glob');
                 verbose('  glob incl: ' + this.baseDir + '/' + include);
                 var _this = this;
+                /* eslint no-loop-func: 0 */
                 glob(this.baseDir + '/' + include, { 'sync': true }, function(err, files) {
                   if (err) throw (err);
                   include = '';
