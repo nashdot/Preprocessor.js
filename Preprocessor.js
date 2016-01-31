@@ -20,7 +20,6 @@
  * see: https://github.com/dcodeIO/Preprocessor.js for details
  */
 (function(global) {
-
   /**
    * Constructs a new Preprocessor.
    * @exports Preprocessor
@@ -33,39 +32,38 @@
    * @constructor
    */
   var Preprocessor = function Preprocessor(source, baseDirOrIncludes, preserveLineNumbers) {
-
     /**
      * Source code to pre-process.
      * @type {string}
      * @expose
      */
-    this.source = ""+source;
+    this.source = '' + source;
 
     /**
      * Source base directory.
      * @type {string}
      * @expose
      */
-    this.baseDir = typeof baseDirOrIncludes == 'string' ? baseDirOrIncludes : ".";
+    this.baseDir = typeof baseDirOrIncludes === 'string' ? baseDirOrIncludes : '.';
 
     /**
      * Included sources by filename.
      * @type {Object.<string, string>}
      */
-    this.includes = typeof baseDirOrIncludes == 'object' ? baseDirOrIncludes : {};
+    this.includes = typeof baseDirOrIncludes === 'object' ? baseDirOrIncludes : {};
 
     /**
      * Preserve line numbers when removing blocks of code
      * @type {boolean}
      */
-    this.preserveLineNumbers = typeof preserveLineNumbers == 'boolean' ? preserveLineNumbers : false;
+    this.preserveLineNumbers = typeof preserveLineNumbers === 'boolean' ? preserveLineNumbers : false;
 
     /**
      * Whether running inside of node.js or not.
      * @type {boolean}
      * @expose
      */
-    this.isNode = (typeof window == 'undefined' || !window.window) && typeof require == 'function';
+    this.isNode = (typeof window === 'undefined' || !window.window) && typeof require === 'function';
 
     /**
      * Error reporting source ahead length.
@@ -137,7 +135,7 @@
    */
   Preprocessor.stripSlashes = function(str) {
     // ref: http://phpjs.org/functions/stripslashes/
-    return (str + '').replace(/\\(.?)/g, function (s, n1) {
+    return (str + '').replace(/\\(.?)/g, function(s, n1) {
       switch (n1) {
         case '\\': return '\\';
         case '0': return '\u0000';
@@ -154,7 +152,7 @@
    * @expose
    */
   Preprocessor.addSlashes = function(str) {
-    return (str+'').replace(/([\\"'])/g, "\\$1").replace(/\0/g, "\\0");
+    return (str + '').replace(/([\\"'])/g, '\\$1').replace(/\0/g, '\\0');
   };
 
   /**
@@ -165,11 +163,11 @@
    * @expose
    */
   Preprocessor.indent = function(str, indent) {
-    var lines = str.split("\n");
-    for (var i=0; i<lines.length; i++) {
+    var lines = str.split('\n');
+    for (var i = 0; i < lines.length; i++) {
       lines[i] = indent + lines[i];
     }
-    return lines.join("\n");
+    return lines.join('\n');
   };
 
   /**
@@ -179,7 +177,7 @@
    * @expose
    */
   Preprocessor.nlToStr = function(str) {
-    return '['+str.replace(/\r/g, "").replace(/\n/g, "\\n")+']';
+    return '[' + str.replace(/\r/g, '').replace(/\n/g, '\\n') + ']';
   };
 
   /**
@@ -200,13 +198,13 @@
     return (function(runtimeDefines, inlineDefines, expr) {
       for (var key in runtimeDefines) {
         if (runtimeDefines.hasOwnProperty(key)) {
-          eval("var "+key+" = \""+addSlashes(""+runtimeDefines[key])+"\";");
+          eval('var ' + key + ' = "' + addSlashes('' + runtimeDefines[key]) + '";');
         }
       }
-      for (var i=0; i<inlineDefines.length; i++) {
+      for (var i = 0; i < inlineDefines.length; i++) {
         var def = inlineDefines[i];
-        if (def.substring(0,9) != 'function ' && def.substring(0,4) != 'var ') {
-          def = "var "+def; // Enforce local
+        if (def.substring(0, 9) !== 'function ' && def.substring(0, 4) !== 'var ') {
+          def = 'var ' + def; // Enforce local
         }
         eval(def);
       }
@@ -224,172 +222,172 @@
    */
   Preprocessor.prototype.process = function(defines, verbose) {
     defines = defines || {};
-    verbose = typeof verbose == 'function' ? verbose : function() {};
-    verbose("Defines: "+JSON.stringify(defines));
+    verbose = typeof verbose === 'function' ? verbose : function() {};
+    verbose('Defines: ' + JSON.stringify(defines));
 
     var match, match2, include, p, stack = [];
     while ((match = Preprocessor.EXPR.exec(this.source)) !== null) {
-      verbose(match[2]+" @ "+match.index+"-"+Preprocessor.EXPR.lastIndex);
+      verbose(match[2] + ' @ ' + match.index + '-' + Preprocessor.EXPR.lastIndex);
       var indent = match[1];
       switch (match[2]) {
         case 'include_once':
         case 'include':
           Preprocessor.INCLUDE.lastIndex = match.index;
           if ((match2 = Preprocessor.INCLUDE.exec(this.source)) === null) {
-            throw(new Error("Illegal #"+match[2]+": "+this.source.substring(match.index, match.index+this.errorSourceAhead)+"..."));
+            throw (new Error('Illegal #' + match[2] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           include = Preprocessor.stripSlashes(match2[2]);
           if (typeof this.includes[include] !== 'undefined') { // Do we already know it?
-            if (match2[1] === "include_once") {
-              verbose("  skip incl: "+include);
-              include = "";
+            if (match2[1] === 'include_once') {
+              verbose('  skip incl: ' + include);
+              include = '';
             } else {
-              verbose("  incl: "+include);
+              verbose('  incl: ' + include);
               include = this.includes[include];
             }
           } else { // Load it if in node.js...
             if (!this.isNode) {
-              throw(new Error("Failed to resolve include: "+this.baseDir+"/"+include));
+              throw (new Error('Failed to resolve include: ' + this.baseDir + '/' + include));
             }
             try {
               var key = include,
-                fs = require("fs");
+                fs = require('fs');
               if (GLOB_EXP.test(include)) {
-                var glob = require("glob");
-                verbose('  glob incl: '+this.baseDir+"/"+include);
+                var glob = require('glob');
+                verbose('  glob incl: ' + this.baseDir + '/' + include);
                 var _this = this;
-                glob(this.baseDir+"/"+include, {"sync": true}, function(err, files) {
-                  if (err) throw(err);
+                glob(this.baseDir + '/' + include, { 'sync': true }, function(err, files) {
+                  if (err) throw (err);
                   include = '';
-                  for (var i=0; i<files.length; i++) {
-                    verbose('  incl: '+files[i]);
-                    var contents = fs.readFileSync(files[i])+"";
+                  for (var i = 0; i < files.length; i++) {
+                    verbose('  incl: ' + files[i]);
+                    var contents = fs.readFileSync(files[i]) + '';
                     _this.includes[key] = contents;
                     include += contents;
                   }
                 });
               } else {
-                verbose('  incl: '+include);
-                include = fs.readFileSync(this.baseDir+"/"+include)+"";
+                verbose('  incl: ' + include);
+                include = fs.readFileSync(this.baseDir + '/' + include) + '';
                 this.includes[key] = include;
               }
             } catch (e) {
-              throw(new Error("Include failed: "+include+" ("+e+")"));
+              throw (new Error('Include failed: ' + include + ' (' + e + ')'));
             }
           }
-          this.source = this.source.substring(0, match.index)+Preprocessor.indent(include, indent)+this.source.substring(Preprocessor.INCLUDE.lastIndex);
-          Preprocessor.EXPR.lastIndex = stack.length > 0 ? stack[stack.length-1].lastIndex : 0; // Start over again
-          verbose("  continue at "+Preprocessor.EXPR.lastIndex);
+          this.source = this.source.substring(0, match.index) + Preprocessor.indent(include, indent) + this.source.substring(Preprocessor.INCLUDE.lastIndex);
+          Preprocessor.EXPR.lastIndex = stack.length > 0 ? stack[stack.length - 1].lastIndex : 0; // Start over again
+          verbose('  continue at ' + Preprocessor.EXPR.lastIndex);
           break;
         case 'put':
           Preprocessor.PUT.lastIndex = match.index;
           if ((match2 = Preprocessor.PUT.exec(this.source)) === null) {
-            throw(new Error("Illegal #"+match[2]+": "+this.source.substring(match.index, match.index+this.errorSourceAhead)+"..."));
+            throw (new Error('Illegal #' + match[2] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           include = match2[1];
-          verbose("  expr: "+match2[1]);
+          verbose('  expr: ' + match2[1]);
           include = Preprocessor.evaluate(defines, this.defines, match2[1]);
-          verbose("  value: "+Preprocessor.nlToStr(include));
-          this.source = this.source.substring(0, match.index)+indent+include+this.source.substring(Preprocessor.PUT.lastIndex);
+          verbose('  value: ' + Preprocessor.nlToStr(include));
+          this.source = this.source.substring(0, match.index) + indent + include + this.source.substring(Preprocessor.PUT.lastIndex);
           Preprocessor.EXPR.lastIndex = match.index + include.length;
-          verbose("  continue at "+Preprocessor.EXPR.lastIndex);
+          verbose('  continue at ' + Preprocessor.EXPR.lastIndex);
           break;
         case 'ifdef':
         case 'ifndef':
         case 'if':
           Preprocessor.IF.lastIndex = match.index;
           if ((match2 = Preprocessor.IF.exec(this.source)) === null) {
-            throw(new Error("Illegal #"+match[2]+": "+this.source.substring(match.index, match.index+this.errorSourceAhead)+"..."));
+            throw (new Error('Illegal #' + match[2] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
-          verbose("  test: "+match2[2]);
-          if (match2[1] == "ifdef") {
+          verbose('  test: ' + match2[2]);
+          if (match2[1] === 'ifdef') {
             include = !!defines[match2[2]];
-          } else if (match2[1] == "ifndef") {
+          } else if (match2[1] === 'ifndef') {
             include = !defines[match2[2]];
           } else {
             include = Preprocessor.evaluate(defines, this.defines, match2[2]);
           }
-          verbose("  value: "+include);
-          stack.push(p={
-            "include": include,
-            "index": match.index,
-            "lastIndex": Preprocessor.IF.lastIndex
+          verbose('  value: ' + include);
+          stack.push(p = {
+            'include': include,
+            'index': match.index,
+            'lastIndex': Preprocessor.IF.lastIndex
           });
-          verbose("  push: "+JSON.stringify(p));
+          verbose('  push: ' + JSON.stringify(p));
           break;
         case 'endif':
         case 'else':
         case 'elif':
           Preprocessor.ENDIF.lastIndex = match.index;
           if ((match2 = Preprocessor.ENDIF.exec(this.source)) === null) {
-            throw(new Error("Illegal #"+match[2]+": "+this.source.substring(match.index, match.index+this.errorSourceAhead)+"..."));
+            throw (new Error('Illegal #' + match[2] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
-          if (stack.length == 0) {
-            throw(new Error("Unexpected #"+match2[1]+": "+this.source.substring(match.index, match.index+this.errorSourceAhead)+"..."));
+          if (stack.length === 0) {
+            throw (new Error('Unexpected #' + match2[1] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           var before = stack.pop();
-          verbose("  pop: "+JSON.stringify(before));
+          verbose('  pop: ' + JSON.stringify(before));
 
           if (this.preserveLineNumbers) {
-            include = this.source.substring(before["index"], before["lastIndex"]).replace(NOT_LINE_ENDING, "")+
-              this.source.substring(before["lastIndex"], match.index)+
-              this.source.substring(match.index, Preprocessor.ENDIF.lastIndex).replace(NOT_LINE_ENDING, "");
+            include = this.source.substring(before['index'], before['lastIndex']).replace(NOT_LINE_ENDING, '') +
+              this.source.substring(before['lastIndex'], match.index) +
+              this.source.substring(match.index, Preprocessor.ENDIF.lastIndex).replace(NOT_LINE_ENDING, '');
           } else {
-            include = this.source.substring(before["lastIndex"], match.index);
+            include = this.source.substring(before['lastIndex'], match.index);
           }
 
-          if (before["include"]) {
-            verbose("  incl: "+Preprocessor.nlToStr(include)+", 0-"+before['index']+" + "+include.length+" bytes + "+Preprocessor.ENDIF.lastIndex+"-"+this.source.length);
-            this.source = this.source.substring(0, before["index"])+include+this.source.substring(Preprocessor.ENDIF.lastIndex);
+          if (before['include']) {
+            verbose('  incl: ' + Preprocessor.nlToStr(include) + ', 0-' + before['index'] + ' + ' + include.length + ' bytes + ' + Preprocessor.ENDIF.lastIndex + '-' + this.source.length);
+            this.source = this.source.substring(0, before['index']) + include+this.source.substring(Preprocessor.ENDIF.lastIndex);
           } else if (this.preserveLineNumbers) {
-            verbose("  excl(\\n): "+Preprocessor.nlToStr(include)+", 0-"+before['index']+" + "+Preprocessor.ENDIF.lastIndex+"-"+this.source.length);
-            include = include.replace(NOT_LINE_ENDING, "");
-            this.source = this.source.substring(0, before["index"])+include+this.source.substring(Preprocessor.ENDIF.lastIndex);
+            verbose('  excl(\\n): ' + Preprocessor.nlToStr(include) + ', 0-' + before['index'] + ' + ' + Preprocessor.ENDIF.lastIndex + '-' + this.source.length);
+            include = include.replace(NOT_LINE_ENDING, '');
+            this.source = this.source.substring(0, before['index']) + include+this.source.substring(Preprocessor.ENDIF.lastIndex);
           } else {
-            verbose("  excl: "+Preprocessor.nlToStr(include)+", 0-"+before['index']+" + "+Preprocessor.ENDIF.lastIndex+"-"+this.source.length);
-            include = "";
-            this.source = this.source.substring(0, before["index"])+this.source.substring(Preprocessor.ENDIF.lastIndex);
+            verbose('  excl: ' + Preprocessor.nlToStr(include) + ', 0-' + before['index'] + ' + ' + Preprocessor.ENDIF.lastIndex + '-' + this.source.length);
+            include = '';
+            this.source = this.source.substring(0, before['index']) + this.source.substring(Preprocessor.ENDIF.lastIndex);
           }
-          if (this.source == "") {
-            verbose("  result empty");
+          if (this.source === '') {
+            verbose('  result empty');
           }
-          Preprocessor.EXPR.lastIndex = before["index"]+include.length;
-          verbose("  continue at "+Preprocessor.EXPR.lastIndex);
-          if (match2[1] == "else" || match2[1] == "elif") {
-            if (match2[1] == 'else') {
-              include = !before["include"];
+          Preprocessor.EXPR.lastIndex = before['index'] + include.length;
+          verbose('  continue at ' + Preprocessor.EXPR.lastIndex);
+          if (match2[1] === 'else' || match2[1] === 'elif') {
+            if (match2[1] === 'else') {
+              include = !before['include'];
             } else {
               include = Preprocessor.evaluate(defines, this.defines, match2[2]);
             }
-            stack.push(p={
-              "include": !before["include"],
-              "index": Preprocessor.EXPR.lastIndex,
-              "lastIndex": Preprocessor.EXPR.lastIndex
+            stack.push(p = {
+              'include': !before['include'],
+              'index': Preprocessor.EXPR.lastIndex,
+              'lastIndex': Preprocessor.EXPR.lastIndex
             });
-            verbose("  push: "+JSON.stringify(p));
+            verbose('  push: ' + JSON.stringify(p));
           }
           break;
         case 'define':
           // https://github.com/dcodeIO/Preprocessor.js/issues/5
           Preprocessor.DEFINE.lastIndex = match.index;
           if ((match2 = Preprocessor.DEFINE.exec(this.source)) === null) {
-            throw(new Error("Illegal #"+match[2]+": "+this.source.substring(match.index, match.index+this.errorSourceAhead)+"..."));
+            throw (new Error('Illegal #' + match[2] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           var define = match2[1];
-          verbose("  def: "+match2[1]);
+          verbose('  def: ' + match2[1]);
           this.defines.push(define);
-          var lineEnding = ""
+          var lineEnding = '';
           if (this.preserveLineNumbers) {
-            lineEnding = this.source.substring(match.index, Preprocessor.DEFINE.lastIndex).replace(NOT_LINE_ENDING, "");
+            lineEnding = this.source.substring(match.index, Preprocessor.DEFINE.lastIndex).replace(NOT_LINE_ENDING, '');
           }
-          this.source = this.source.substring(0, match.index)+indent+lineEnding+this.source.substring(Preprocessor.DEFINE.lastIndex);
+          this.source = this.source.substring(0, match.index) + indent + lineEnding + this.source.substring(Preprocessor.DEFINE.lastIndex);
           Preprocessor.EXPR.lastIndex = match.index;
-          verbose("  continue at "+Preprocessor.EXPR.lastIndex);
+          verbose('  continue at ' + Preprocessor.EXPR.lastIndex);
       }
     }
     if (stack.length > 0) {
       before = stack.pop();
-      verbose("Still on stack: "+JSON.stringify(before));
+      verbose('Still on stack: ' + JSON.stringify(before));
     }
     return this.source;
   };
@@ -400,18 +398,18 @@
    * @expose
    */
   Preprocessor.prototype.toString = function() {
-    return "Preprocessor";
+    return 'Preprocessor';
   };
 
   // Enable module loading if available
-  if (typeof module != 'undefined' && module["exports"]) { // CommonJS
-    module["exports"] = Preprocessor;
-  } else if (typeof define != 'undefined' && define["amd"]) { // AMD
-    define("Preprocessor", [], function() { return Preprocessor; });
+  if (typeof module !== 'undefined' && module['exports']) { // CommonJS
+    module['exports'] = Preprocessor;
+  } else if (typeof define !== 'undefined' && define['amd']) { // AMD
+    define('Preprocessor', [], function() { return Preprocessor; });
   } else { // Shim
-    if (!global["dcodeIO"]) {
-      global["dcodeIO"] = {};
+    if (!global['dcodeIO']) {
+      global['dcodeIO'] = {};
     }
-    global["dcodeIO"]["Preprocessor"] = Preprocessor;
+    global['dcodeIO']['Preprocessor'] = Preprocessor;
   }
 })(this);
