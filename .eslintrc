@@ -6,6 +6,7 @@
     "max-len": [2, 120, 4],
     "no-eval": [0],
     "quote-props": [2, "always"],
-    "func-names": [0]
+    "func-names": [0],
+    "vars-on-top": [0]
   }
 }
