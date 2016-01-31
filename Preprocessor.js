@@ -260,16 +260,14 @@
                 verbose('  glob incl: ' + this.baseDir + '/' + include);
                 var _this = this;
                 /* eslint no-loop-func: 0 */
-                glob(this.baseDir + '/' + include, { 'sync': true }, function(err, files) {
-                  if (err) throw (err);
-                  include = '';
-                  for (var i = 0; i < files.length; i++) {
-                    verbose('  incl: ' + files[i]);
-                    var contents = fs.readFileSync(files[i]) + '';
-                    _this.includes[key] = contents;
-                    include += contents;
-                  }
-                });
+                var files = glob(this.baseDir + '/' + include, { 'sync': true });
+                include = '';
+                for (var i = 0; i < files.length; i++) {
+                  verbose('  incl: ' + files[i]);
+                  var contents = fs.readFileSync(files[i]) + '';
+                  _this.includes[key] = contents;
+                  include += contents;
+                }
               } else {
                 verbose('  incl: ' + include);
                 include = fs.readFileSync(this.baseDir + '/' + include) + '';
