@@ -21,6 +21,18 @@
  */
 (function(global) {
   /**
+   * @type {!RegExp}
+   * @inner
+   */
+  var GLOB_EXP = /(?:^|[^\\])\*/;
+
+  /**
+   * @type {!RegExp}
+   * @inner
+   */
+  var NOT_LINE_ENDING = /[^\r\n]/g;
+
+  /**
    * Constructs a new Preprocessor.
    * @exports Preprocessor
    * @class Provides pre-processing of JavaScript source files, e.g. to build different versions of a library.
@@ -114,18 +126,6 @@
    * @type {!RegExp}
    */
   Preprocessor.DEFINE = /define[ ]+([^\n]+)\r?(?:\n|$)/g;
-
-  /**
-   * @type {!RegExp}
-   * @inner
-   */
-  var GLOB_EXP = /(?:^|[^\\])\*/;
-
-  /**
-   * @type {!RegExp}
-   * @inner
-   */
-  var NOT_LINE_ENDING = /[^\r\n]/g;
 
   /**
    * Strips slashes from an escaped string.
