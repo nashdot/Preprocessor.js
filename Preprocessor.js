@@ -399,6 +399,9 @@
             lineEnding + this.source.substring(Preprocessor.DEFINE.lastIndex);
           Preprocessor.EXPR.lastIndex = match.index;
           verbose('  continue at ' + Preprocessor.EXPR.lastIndex);
+          break;
+        default:
+          break;
       }
     }
     if (stack.length > 0) {
