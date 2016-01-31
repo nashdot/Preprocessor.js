@@ -10,6 +10,7 @@
     "vars-on-top": [0],
     "no-param-reassign": [0],
     "one-var": [0],
-    no-cond-assign: [2, "except-parens"]
+    "no-cond-assign": [2, "except-parens"],
+    "dot-notation": [0]
   }
 }
