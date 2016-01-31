@@ -422,6 +422,7 @@
   };
 
   // Enable module loading if available
+  /* eslint no-undef: 0 */
   if (typeof module !== 'undefined' && module['exports']) { // CommonJS
     module['exports'] = Preprocessor;
   } else if (typeof define !== 'undefined' && define['amd']) { // AMD
