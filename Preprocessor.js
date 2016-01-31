@@ -19,7 +19,7 @@
  * Released under the Apache License, Version 2.0
  * see: https://github.com/dcodeIO/Preprocessor.js for details
  */
-(function(global) {
+var module = function(global) {
   /**
    * @type {!RegExp}
    * @inner
@@ -432,4 +432,6 @@
     }
     global['dcodeIO']['Preprocessor'] = Preprocessor;
   }
-})(this);
+};
+
+module(this);
