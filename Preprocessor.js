@@ -215,7 +215,8 @@
   /**
    * Preprocesses.
    * @param {object.<string,string>} defines Defines
-   * @param {function(string)=} verbose Print verbose processing information to the specified function as the first parameter. Defaults to not print debug information.
+   * @param {function(string)=} verbose Print verbose processing information to
+   *    the specified function as the first parameter. Defaults to not print debug information.
    * @return {string} Processed source
    * @throws {Error} If the source cannot be pre-processed
    * @expose
@@ -234,7 +235,8 @@
         case 'include':
           Preprocessor.INCLUDE.lastIndex = match.index;
           if ((match2 = Preprocessor.INCLUDE.exec(this.source)) === null) {
-            throw (new Error('Illegal #' + match[2] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
+            throw (new Error('Illegal #' + match[2] + ': ' +
+              this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           include = Preprocessor.stripSlashes(match2[2]);
           if (typeof this.includes[include] !== 'undefined') { // Do we already know it?
@@ -275,20 +277,23 @@
               throw (new Error('Include failed: ' + include + ' (' + e + ')'));
             }
           }
-          this.source = this.source.substring(0, match.index) + Preprocessor.indent(include, indent) + this.source.substring(Preprocessor.INCLUDE.lastIndex);
+          this.source = this.source.substring(0, match.index) +
+            Preprocessor.indent(include, indent) + this.source.substring(Preprocessor.INCLUDE.lastIndex);
           Preprocessor.EXPR.lastIndex = stack.length > 0 ? stack[stack.length - 1].lastIndex : 0; // Start over again
           verbose('  continue at ' + Preprocessor.EXPR.lastIndex);
           break;
         case 'put':
           Preprocessor.PUT.lastIndex = match.index;
           if ((match2 = Preprocessor.PUT.exec(this.source)) === null) {
-            throw (new Error('Illegal #' + match[2] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
+            throw (new Error('Illegal #' + match[2] + ': ' +
+              this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           include = match2[1];
           verbose('  expr: ' + match2[1]);
           include = Preprocessor.evaluate(defines, this.defines, match2[1]);
           verbose('  value: ' + Preprocessor.nlToStr(include));
-          this.source = this.source.substring(0, match.index) + indent + include + this.source.substring(Preprocessor.PUT.lastIndex);
+          this.source = this.source.substring(0, match.index) + indent + include +
+            this.source.substring(Preprocessor.PUT.lastIndex);
           Preprocessor.EXPR.lastIndex = match.index + include.length;
           verbose('  continue at ' + Preprocessor.EXPR.lastIndex);
           break;
@@ -297,7 +302,8 @@
         case 'if':
           Preprocessor.IF.lastIndex = match.index;
           if ((match2 = Preprocessor.IF.exec(this.source)) === null) {
-            throw (new Error('Illegal #' + match[2] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
+            throw (new Error('Illegal #' + match[2] + ': ' +
+              this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           verbose('  test: ' + match2[2]);
           if (match2[1] === 'ifdef') {
@@ -320,10 +326,12 @@
         case 'elif':
           Preprocessor.ENDIF.lastIndex = match.index;
           if ((match2 = Preprocessor.ENDIF.exec(this.source)) === null) {
-            throw (new Error('Illegal #' + match[2] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
+            throw (new Error('Illegal #' + match[2] + ': ' +
+              this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           if (stack.length === 0) {
-            throw (new Error('Unexpected #' + match2[1] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
+            throw (new Error('Unexpected #' + match2[1] + ': ' +
+              this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           var before = stack.pop();
           verbose('  pop: ' + JSON.stringify(before));
@@ -337,16 +345,22 @@
           }
 
           if (before['include']) {
-            verbose('  incl: ' + Preprocessor.nlToStr(include) + ', 0-' + before['index'] + ' + ' + include.length + ' bytes + ' + Preprocessor.ENDIF.lastIndex + '-' + this.source.length);
-            this.source = this.source.substring(0, before['index']) + include+this.source.substring(Preprocessor.ENDIF.lastIndex);
+            verbose('  incl: ' + Preprocessor.nlToStr(include) + ', 0-' + before['index'] +
+              ' + ' + include.length + ' bytes + ' + Preprocessor.ENDIF.lastIndex + '-' + this.source.length);
+            this.source = this.source.substring(0, before['index']) + include +
+              this.source.substring(Preprocessor.ENDIF.lastIndex);
           } else if (this.preserveLineNumbers) {
-            verbose('  excl(\\n): ' + Preprocessor.nlToStr(include) + ', 0-' + before['index'] + ' + ' + Preprocessor.ENDIF.lastIndex + '-' + this.source.length);
+            verbose('  excl(\\n): ' + Preprocessor.nlToStr(include) + ', 0-' + before['index'] +
+              ' + ' + Preprocessor.ENDIF.lastIndex + '-' + this.source.length);
             include = include.replace(NOT_LINE_ENDING, '');
-            this.source = this.source.substring(0, before['index']) + include+this.source.substring(Preprocessor.ENDIF.lastIndex);
+            this.source = this.source.substring(0, before['index']) + include +
+              this.source.substring(Preprocessor.ENDIF.lastIndex);
           } else {
-            verbose('  excl: ' + Preprocessor.nlToStr(include) + ', 0-' + before['index'] + ' + ' + Preprocessor.ENDIF.lastIndex + '-' + this.source.length);
+            verbose('  excl: ' + Preprocessor.nlToStr(include) + ', 0-' + before['index'] +
+              ' + ' + Preprocessor.ENDIF.lastIndex + '-' + this.source.length);
             include = '';
-            this.source = this.source.substring(0, before['index']) + this.source.substring(Preprocessor.ENDIF.lastIndex);
+            this.source = this.source.substring(0, before['index']) +
+              this.source.substring(Preprocessor.ENDIF.lastIndex);
           }
           if (this.source === '') {
             verbose('  result empty');
@@ -371,7 +385,8 @@
           // https://github.com/dcodeIO/Preprocessor.js/issues/5
           Preprocessor.DEFINE.lastIndex = match.index;
           if ((match2 = Preprocessor.DEFINE.exec(this.source)) === null) {
-            throw (new Error('Illegal #' + match[2] + ': ' + this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
+            throw (new Error('Illegal #' + match[2] + ': ' +
+              this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           var define = match2[1];
           verbose('  def: ' + match2[1]);
@@ -380,7 +395,8 @@
           if (this.preserveLineNumbers) {
             lineEnding = this.source.substring(match.index, Preprocessor.DEFINE.lastIndex).replace(NOT_LINE_ENDING, '');
           }
-          this.source = this.source.substring(0, match.index) + indent + lineEnding + this.source.substring(Preprocessor.DEFINE.lastIndex);
+          this.source = this.source.substring(0, match.index) + indent +
+            lineEnding + this.source.substring(Preprocessor.DEFINE.lastIndex);
           Preprocessor.EXPR.lastIndex = match.index;
           verbose('  continue at ' + Preprocessor.EXPR.lastIndex);
       }
