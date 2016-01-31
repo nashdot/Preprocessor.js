@@ -15,6 +15,7 @@
  */
 
 /* eslint no-console: 0 */
+/* eslint max-len: 0 */
 
 /**
  * Preprocessor.js Test Suite.
