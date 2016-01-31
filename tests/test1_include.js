@@ -15,4 +15,4 @@ console.log("ERROR");
 console.log("UNDEFINED is not defined (else)");
 // #endif
 
-var version = // #put "\""+VERSION+"\";"
+var version = // #put '"'+VERSION+'";'
