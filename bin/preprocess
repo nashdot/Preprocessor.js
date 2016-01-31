@@ -15,6 +15,8 @@
  limitations under the License.
  */
 
+ /* eslint no-console: 0 */
+
 /**
  * Preprocessor.js: preprocess Command Line Utility (c) 2013 Daniel Wirtz <dcode@dcode.io>
  * Released under the Apache License, Version 2.0
