@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* eslint no-console: 0 */
+
 /**
  * Preprocessor.js Test Suite.
  * @author Daniel Wirtz <dcode@dcode.io>
