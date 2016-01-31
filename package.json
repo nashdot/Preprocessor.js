@@ -2,17 +2,17 @@
   "name": "preprocessor",
   "version": "1.4.0",
   "author": "Daniel Wirtz <dcode@dcode.io>",
-  "description": "Preprocessor.js: A JavaScript source file preprocessor, e.g. to build different versions of a library.",
+  "description": "Preprocessor.js: A JavaScript source file preprocessor",
   "main": "Preprocessor.js",
   "bin": {
     "preprocess": "./bin/preprocess"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dcodeIO/Preprocessor.js.git"
+    "url": "https://github.com/nashdot/Preprocessor.js.git"
   },
   "bugs": {
-    "url": "https://github.com/dcodeIO/Preprocessor.js/issues"
+    "url": "https://github.com/nashdot/Preprocessor.js/issues"
   },
   "keywords": [
     "source",
