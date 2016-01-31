@@ -30,7 +30,8 @@ var Preprocessor = require(__dirname + '/../Preprocessor.js'),
 
 if (process.argv.length < 3) {
   console.log('Preprocessor.js ' + pkg.version + ' - https://github.com/dcodeIO/Preprocessor.js\n');
-  console.log('  Usage: ' + path.basename(process.argv[1]) + ' sourceFile [baseDirectory] [-myKey[=myValue], ...] [> outFile]');
+  console.log('  Usage: ' + path.basename(process.argv[1]) +
+    ' sourceFile [baseDirectory] [-myKey[=myValue], ...] [> outFile]');
   process.exit(11);
 }
 var sourceFile = process.argv[2];
