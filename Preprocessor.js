@@ -19,7 +19,7 @@
  * Released under the Apache License, Version 2.0
  * see: https://github.com/dcodeIO/Preprocessor.js for details
  */
-var module = function(global) {
+(function(global) {
   /**
    * @type {!RegExp}
    * @inner
@@ -195,7 +195,7 @@ var module = function(global) {
       inlineDefines = [];
     }
     var addSlashes = Preprocessor.addSlashes;
-    return function() {
+    evalFunction = function() {
       for (var key in runtimeDefines) {
         if (runtimeDefines.hasOwnProperty(key)) {
           eval('var ' + key + ' = "' + addSlashes('' + runtimeDefines[key]) + '";');
@@ -210,6 +210,7 @@ var module = function(global) {
       }
       return eval(expr);
     };
+    return evalFunction();
   };
 
   /**
@@ -432,6 +433,4 @@ var module = function(global) {
     }
     global['dcodeIO']['Preprocessor'] = Preprocessor;
   }
-};
-
-module(this);
+})(this);
