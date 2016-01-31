@@ -29,7 +29,6 @@
     "glob": "~6.0.0"
   },
   "devDependencies": {
-    "closurecompiler": "latest",
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^4.0.0",
     "testjs": "latest"
@@ -41,8 +40,7 @@
   "scripts": {
     "prepublish": "npm test",
     "test": "node node_modules/testjs/bin/testjs tests/suite.js",
-    "make": "npm run-script compile && npm test && npm run-script jsdoc",
-    "compile": "ccjs Preprocessor.js --create_source_map=Preprocessor.min.map --compilation_level=ADVANCED_OPTIMIZATIONS --externs=node > Preprocessor.min.js",
+    "make": "npm test && npm run-script jsdoc",
     "jsdoc": "jsdoc -c jsdoc.json"
   },
   "preferGlobal": true
