@@ -406,8 +406,7 @@
       }
     }
     if (stack.length > 0) {
-      before = stack.pop();
-      verbose('Still on stack: ' + JSON.stringify(before));
+      verbose('Still on stack: ' + JSON.stringify(stack.pop()));
     }
     return this.source;
   };
