@@ -76,7 +76,7 @@ Install via npm: `npm -g install preprocessor`
 
 #### Command line ####
 
-Usage: `preprocess sourceFile [baseDirectory] [-myKey[=myValue], ...] [> outFile]`
+Usage: `preprocess sourceFile [baseDirectory] [-myKey[=myValue], ...] [--verbose] [> outFile]`
 
 ```bash
 preprocess Source.js . -FULL=true > Source.full.js
