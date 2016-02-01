@@ -1,12 +1,6 @@
-![Preprocessor.js - A JavaScript preprocessor](https://raw.github.com/dcodeIO/Preprocessor.js/master/Preprocessor.png)
+Preprocessor.js - A JavaScript preprocessor
 ===========================================
-Provides a JavaScript source file preprocessor, e.g. to build different versions of a library. It's for example used to
-build [ProtoBuf.js](https://github.com/dcodeIO/ProtoBuf.js) (its [build](https://github.com/dcodeIO/ProtoBuf.js/blob/master/build.js)
-and [main script](https://github.com/dcodeIO/ProtoBuf.js/blob/master/src/ProtoBuf.js) are quite good examples).
-
-**Deprecation notice:** Preprocessor.js has been deprecated in favor of [MetaScript](https://github.com/dcodeIO/MetaScript),
-a much more JavaScripty way for build time meta programming using JavaScript itself as the meta language. Check out the
-[migration guide](https://github.com/dcodeIO/MetaScript/wiki/Migration) to get a quick impression of its merits.
+Provides a JavaScript source file preprocessor.
 
 Directives
 ----------
@@ -70,10 +64,7 @@ Features
 --------
 * [CommonJS](http://www.commonjs.org/) compatible
 * [RequireJS](http://requirejs.org/)/AMD compatible
-* Shim compatible (include the script, then use var ByteBuffer = dcodeIO.ByteBuffer;)
 * [node.js](http://nodejs.org) compatible, also available via [npm](https://npmjs.org/package/preprocessor)
-* [Closure Compiler](https://developers.google.com/closure/compiler/) ADVANCED_OPTIMIZATIONS compatible (fully annotated,
-`Preprocessor.min.js` has been compiled this way, `Preprocessor.min.map` is the source map)
 * Fully documented using [jsdoc3](https://github.com/jsdoc3/jsdoc)
 * Well tested through [nodeunit](https://github.com/caolan/nodeunit)
 * Zero production dependencies
@@ -133,11 +124,11 @@ require(["/path/to/Preprocessor.js"], function(Preprocessor) {
 sources by filename:
 
 ```html
-<script src="//raw.github.com/dcodeIO/Preprocessor.js/master/Preprocessor.min.js"></script>
+<script src="//raw.github.com/nashdot/Preprocessor.js/master/Preprocessor.js"></script>
 ```
 
 ```javascript
-var Preprocessor = dcodeIO.Preprocessor;
+var Preprocessor = nashdot.Preprocessor;
 var source = "..."; // e.g. through. $.ajax
 var pp = new Preprocessor(source, {
     "./includes/extension.js": "var myVar = 2;" // <- #include "includes/extension.js"
@@ -152,17 +143,17 @@ are on.
 
 Downloads
 ---------
-* [ZIP-Archive](https://github.com/dcodeIO/Preprocessor.js/archive/master.zip)
-* [Tarball](https://github.com/dcodeIO/Preprocessor.js/tarball/master)
+* [ZIP-Archive](https://github.com/nashdot/Preprocessor.js/archive/master.zip)
+* [Tarball](https://github.com/nashdot/Preprocessor.js/tarball/master)
 
 Documentation
 -------------
-* [View documentation](http://htmlpreview.github.io/?https://github.com/dcodeIO/Preprocessor.js/blob/master/docs/Preprocessor.html)
+* [View documentation](http://htmlpreview.github.io/?https://github.com/nashdot/Preprocessor.js/blob/master/docs/Preprocessor.html)
 
-Tests (& Examples) [![Build Status](https://travis-ci.org/dcodeIO/Preprocessor.js.png?branch=master)](https://travis-ci.org/dcodeIO/Preprocessor.js)
+Tests (& Examples) [![Build Status](https://travis-ci.org/nashdot/Preprocessor.js.png?branch=master)](https://travis-ci.org/nashdot/Preprocessor.js)
 ------------------
-* [View source](https://github.com/dcodeIO/Preprocessor.js/blob/master/tests/suite.js)
-* [View report](https://travis-ci.org/dcodeIO/Preprocessor.js)
+* [View source](https://github.com/nashdot/Preprocessor.js/blob/master/tests/suite.js)
+* [View report](https://travis-ci.org/nashdot/Preprocessor.js)
 
 License
 -------

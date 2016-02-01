@@ -17,7 +17,7 @@
 /**
  * @license Preprocessor.js (c) 2013 Daniel Wirtz <dcode@dcode.io>
  * Released under the Apache License, Version 2.0
- * see: https://github.com/dcodeIO/Preprocessor.js for details
+ * see: https://github.com/nashdot/Preprocessor.js for details
  */
 (function(global) {
   /**
@@ -426,9 +426,9 @@
   } else if (typeof define !== 'undefined' && define['amd']) { // AMD
     define('Preprocessor', [], function() { return Preprocessor; });
   } else { // Shim
-    if (!global['dcodeIO']) {
-      global['dcodeIO'] = {};
+    if (!global['nashdot']) {
+      global['nashdot'] = {};
     }
-    global['dcodeIO']['Preprocessor'] = Preprocessor;
+    global['nashdot']['Preprocessor'] = Preprocessor;
   }
 })(this);
