@@ -1,7 +1,10 @@
 {
   "name": "preprocessor.js",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": "Daniel Wirtz <dcode@dcode.io>",
+  "contributors": [
+    "Stanislav Lesnikov <stan@nashdot.com>"
+  ],
   "description": "Preprocessor.js: A JavaScript source file preprocessor",
   "main": "Preprocessor.js",
   "bin": {

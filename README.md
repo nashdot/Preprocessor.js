@@ -64,7 +64,7 @@ Features
 --------
 * [CommonJS](http://www.commonjs.org/) compatible
 * [RequireJS](http://requirejs.org/)/AMD compatible
-* [node.js](http://nodejs.org) compatible, also available via [npm](https://npmjs.org/package/preprocessor)
+* [node.js](http://nodejs.org) compatible, also available via [npm](https://npmjs.org/package/preprocessor.js)
 * Fully documented using [jsdoc3](https://github.com/jsdoc3/jsdoc)
 * Well tested through [nodeunit](https://github.com/caolan/nodeunit)
 * Zero production dependencies
