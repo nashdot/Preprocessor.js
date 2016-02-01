@@ -67,7 +67,10 @@ for (; i < process.argv.length; i++) {
   } else {
     val = d[1];
   }
-  directives[d[0]] = val;
+  directives[d[0]] = {
+    'type': 'var',
+    'value': val
+  };
 }
 var source = fs.readFileSync(sourceFile) + '';
 var pp = new Preprocessor(source, baseDir);

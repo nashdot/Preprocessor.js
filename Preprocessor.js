@@ -125,7 +125,25 @@
    * #define EXPRESSION
    * @type {!RegExp}
    */
-  Preprocessor.DEFINE = /define[ ]+([^\n]+)\r?(?:\n|$)/g;
+  Preprocessor.DEFINE = /define[ ]+([^\n\r]+)\r?(?:\n|$)/g;
+
+  /**
+   * #define EXPRESSION
+   * @type {!RegExp}
+   */
+  Preprocessor.VAR = /var[ ]+([a-zA-Z_][a-zA-Z0-9_]*)[ ]*=[ ]*(.+)/g;
+
+  /**
+   * #define EXPRESSION
+   * @type {!RegExp}
+   */
+  Preprocessor.BOOLVAR = /([a-zA-Z_][a-zA-Z0-9_]*)[ ]*/g;
+
+  /**
+   * #define EXPRESSION
+   * @type {!RegExp}
+   */
+  Preprocessor.FUNCTION = /function[ ]+([a-zA-Z_][a-zA-Z0-9_]*)[ ]*(.+)/g;
 
   /**
    * Strips slashes from an escaped string.
@@ -182,32 +200,24 @@
 
   /**
    * Evaluates an expression.
-   * @param {object.<string,string>} runtimeDefines Runtime defines
-   * @param {Array.<string>|string} inlineDefines Inline defines (optional for backward compatibility)
+   * @param {object.<string,string>} defines Defines
    * @param {string=} expr Expression to evaluate
    * @return {*} Expression result
    * @throws {Error} If the expression cannot be evaluated
    * @expose
    */
-  Preprocessor.evaluate = function(runtimeDefines, inlineDefines, expr) {
-    if (typeof inlineDefines === 'string') {
-      expr = inlineDefines;
-      inlineDefines = [];
-    }
-    var addSlashes = Preprocessor.addSlashes;
+  Preprocessor.evaluate = function(defines, expr) {
     evalFunction = function() {
-      for (var key in runtimeDefines) {
-        if (runtimeDefines.hasOwnProperty(key)) {
-          eval('var ' + key + ' = "' + addSlashes('' + runtimeDefines[key]) + '";');
+      for (var key in defines) {
+        if (defines.hasOwnProperty(key)) {
+          if (defines[key].type === 'var') {
+            eval('var ' + key + ' = ' + defines[key].value + ';');
+          } else {
+            eval('function ' + key + defines[key].value);
+          }
         }
       }
-      for (var i = 0; i < inlineDefines.length; i++) {
-        var def = inlineDefines[i];
-        if (def.substring(0, 9) !== 'function ' && def.substring(0, 4) !== 'var ') {
-          def = 'var ' + def; // Enforce local
-        }
-        eval(def);
-      }
+
       return eval(expr);
     };
     return evalFunction();
@@ -289,8 +299,8 @@
               this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           include = match2[1];
-          verbose('  expr: ' + match2[1]);
-          include = Preprocessor.evaluate(defines, this.defines, match2[1]);
+          verbose('  expr: ' + include);
+          include = Preprocessor.evaluate(defines, include);
           verbose('  value: ' + Preprocessor.nlToStr(include));
           this.source = this.source.substring(0, match.index) + indent + include +
             this.source.substring(Preprocessor.PUT.lastIndex);
@@ -307,11 +317,11 @@
           }
           verbose('  test: ' + match2[2]);
           if (match2[1] === 'ifdef') {
-            include = !!defines[match2[2]];
+            include = defines[match2[2]] !== undefined;
           } else if (match2[1] === 'ifndef') {
-            include = !defines[match2[2]];
+            include = defines[match2[2]] === undefined;
           } else {
-            include = Preprocessor.evaluate(defines, this.defines, match2[2]);
+            include = Preprocessor.evaluate(defines, match2[2]);
           }
           verbose('  value: ' + include);
           stack.push(p = {
@@ -371,7 +381,7 @@
             if (match2[1] === 'else') {
               include = !before['include'];
             } else {
-              include = Preprocessor.evaluate(defines, this.defines, match2[2]);
+              include = Preprocessor.evaluate(defines, match2[2]);
             }
             stack.push(p = {
               'include': !before['include'],
@@ -389,8 +399,34 @@
               this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           var define = match2[1];
-          verbose('  def: ' + match2[1]);
-          this.defines.push(define);
+          verbose('  def: "' + define + '"');
+
+          var identifier, value, type;
+          if ((match3 = Preprocessor.VAR.exec(define)) !== null) {
+            type = 'var';
+            identifier = match3[1];
+            value = match3[2];
+          } else if ((match3 = Preprocessor.FUNCTION.exec(define)) !== null) {
+            type = 'function';
+            identifier = match3[1];
+            value = match3[2];
+          } else if ((match3 = Preprocessor.BOOLVAR.exec(define)) !== null) {
+            type = 'var';
+            identifier = match3[1];
+            value = true;
+          } else {
+            throw (new Error('Illegal #' + match[2] + ': ' +
+              this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
+          }
+
+          verbose('  identifier: ' + identifier);
+          verbose('  value: ' + value);
+
+          defines[identifier] = {
+            'type': type,
+            'value': value
+          };
+
           var lineEnding = '';
           if (this.preserveLineNumbers) {
             lineEnding = this.source.substring(match.index, Preprocessor.DEFINE.lastIndex).replace(NOT_LINE_ENDING, '');

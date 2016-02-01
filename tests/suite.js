@@ -39,8 +39,8 @@ var suite = {
   },
 
   'evaluate': function(test) {
-    var defines = { 'VERSION': '1.0' };
-    test.equal('"' + defines['VERSION'] + '";', Preprocessor.evaluate(defines, "'\"'+VERSION+'\";'"));
+    var defines = { 'VERSION': { type: 'var', value: '"1.0"' } };
+    test.equal(defines['VERSION'].value + ';', Preprocessor.evaluate(defines, "'\"'+VERSION+'\";'"));
     test.equal('"' + 'Hello world!' + '";', Preprocessor.evaluate(defines, '"\\"Hello world!\\";";'));
     test.equal('2;', Preprocessor.evaluate(defines, '(1+1)+";"'));
     test.done();
@@ -48,14 +48,14 @@ var suite = {
 
   'test1': function(test) {
     var pp = new Preprocessor(fs.readFileSync(__dirname + '/test1.js'), __dirname);
-    var src = pp.process({ 'VERSION': '1.0' }, console.log).replace(/\r/g, '');
+    var src = pp.process({ 'VERSION': { type: 'var', value: '"1.0"' } }, console.log).replace(/\r/g, '');
     test.equal(src, '\nconsole.log("UNDEFINED is not defined");\n\nconsole.log("UNDEFINED is not defined (else)");\n\nvar version = "1.0";\n');
     test.done();
   },
 
   'test2': function(test) {
     var pp = new Preprocessor(fs.readFileSync(__dirname + '/test2.js'), __dirname);
-    var src = pp.process({ 'VERSION': '1.0' }, console.log).replace(/\r/g, '');
+    var src = pp.process({ 'VERSION': { type: 'var', value: '"1.0"' } }, console.log).replace(/\r/g, '');
     test.equal(src, '    console.log("2==2")\n    console.log("VERSION=="+"1.0");\n');
     test.done();
   },
@@ -95,6 +95,33 @@ var suite = {
     var pp = new Preprocessor(fs.readFileSync(__dirname + '/preserve_lines.js'), __dirname, true);
     var src = pp.process({}, console.log).replace(/\r/g, '');
     test.equal(src, 'var i = 0;\n\n\n\ni = 2;\n\n\nconsole.log(i);\n');
+
+    test.done();
+  },
+
+  'globalDefines': function(test) {
+    console.log('-- globalDefines');
+    var pp = new Preprocessor(fs.readFileSync(__dirname + '/issue11.js'), __dirname);
+    var src = pp.process({}, console.log).replace(/\r/g, '');
+    test.equal(src, "console.log('hi');\n");
+
+    test.done();
+  },
+
+  'globalDefines_2': function(test) {
+    console.log('-- globalDefines_2');
+    var pp = new Preprocessor(fs.readFileSync(__dirname + '/issue11_2.js'), __dirname);
+    var src = pp.process({}, console.log).replace(/\r/g, '');
+    test.equal(src, "console.log('hi');\n");
+
+    test.done();
+  },
+
+  'globalDefines_3': function(test) {
+    console.log('-- globalDefines_3');
+    var pp = new Preprocessor(fs.readFileSync(__dirname + '/issue11_3.js'), __dirname);
+    var src = pp.process({}, console.log).replace(/\r/g, '');
+    test.equal(src, "console.log('hello');\n");
 
     test.done();
   }
