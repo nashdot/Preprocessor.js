@@ -131,19 +131,19 @@
    * #define EXPRESSION
    * @type {!RegExp}
    */
-  Preprocessor.VAR = /var[ ]+([a-zA-Z_][a-zA-Z0-9_]*)[ ]*=[ ]*(.+)/g;
+  Preprocessor.VAR = /define[ ]+var[ ]+([a-zA-Z_][a-zA-Z0-9_]*)[ ]*=[ ]*(.+)/g;
 
   /**
    * #define EXPRESSION
    * @type {!RegExp}
    */
-  Preprocessor.BOOLVAR = /([a-zA-Z_][a-zA-Z0-9_]*)[ ]*/g;
+  Preprocessor.BOOLVAR = /define[ ]+([a-zA-Z_][a-zA-Z0-9_]*)[ ]*/g;
 
   /**
    * #define EXPRESSION
    * @type {!RegExp}
    */
-  Preprocessor.FUNCTION = /function[ ]+([a-zA-Z_][a-zA-Z0-9_]*)[ ]*(.+)/g;
+  Preprocessor.FUNCTION = /define[ ]+function[ ]+([a-zA-Z_][a-zA-Z0-9_]*)[ ]*(.+)/g;
 
   /**
    * Strips slashes from an escaped string.
@@ -316,6 +316,7 @@
               this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           verbose('  test: ' + match2[2]);
+          verbose('  defines  ' + JSON.stringify(defines));
           if (match2[1] === 'ifdef') {
             include = defines[match2[2]] !== undefined;
           } else if (match2[1] === 'ifndef') {
@@ -392,8 +393,11 @@
           }
           break;
         case 'define':
-          // https://github.com/dcodeIO/Preprocessor.js/issues/5
           Preprocessor.DEFINE.lastIndex = match.index;
+          Preprocessor.VAR.lastIndex = match.index;
+          Preprocessor.FUNCTION.lastIndex = match.index;
+          Preprocessor.BOOLVAR.lastIndex = match.index;
+
           if ((match2 = Preprocessor.DEFINE.exec(this.source)) === null) {
             throw (new Error('Illegal #' + match[2] + ': ' +
               this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
@@ -402,23 +406,27 @@
           verbose('  def: "' + define + '"');
 
           var identifier, value, type;
-          if ((match3 = Preprocessor.VAR.exec(define)) !== null) {
+          if ((match3 = Preprocessor.VAR.exec(this.source)) !== null) {
             type = 'var';
             identifier = match3[1];
             value = match3[2];
-          } else if ((match3 = Preprocessor.FUNCTION.exec(define)) !== null) {
+            verbose(' match3(var): ' + JSON.stringify(match3));
+          } else if ((match3 = Preprocessor.FUNCTION.exec(this.source)) !== null) {
             type = 'function';
             identifier = match3[1];
             value = match3[2];
-          } else if ((match3 = Preprocessor.BOOLVAR.exec(define)) !== null) {
+            verbose(' match3(function): ' + JSON.stringify(match3));
+          } else if ((match3 = Preprocessor.BOOLVAR.exec(this.source)) !== null) {
             type = 'var';
             identifier = match3[1];
             value = true;
+            verbose(' match3(boolvar): ' + JSON.stringify(match3));
           } else {
             throw (new Error('Illegal #' + match[2] + ': ' +
               this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
 
+          verbose('  type: ' + type);
           verbose('  identifier: ' + identifier);
           verbose('  value: ' + value);
 
@@ -426,6 +434,8 @@
             'type': type,
             'value': value
           };
+
+          verbose('  defines  ' + JSON.stringify(defines));
 
           var lineEnding = '';
           if (this.preserveLineNumbers) {

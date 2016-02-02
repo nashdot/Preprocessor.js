@@ -2,13 +2,13 @@ var test = require('tape');
 
 var Preprocessor = require(__dirname + '/../Preprocessor.js');
 
-test('init', function(t) {
+test('test_01:init', function(t) {
   t.ok(typeof Preprocessor === 'function', 'Preprocessor is a function');
 
   t.end();
 });
 
-test('verbose', function(t) {
+test('test_01:verbose', function(t) {
   var pp = new Preprocessor('// #ifdef UNDEFINED\ntest();\n// #endif\n');
   var msgs = '';
   pp.process({}, function(msg) { msgs += msg; });
