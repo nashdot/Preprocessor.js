@@ -42,7 +42,7 @@
   },
   "scripts": {
     "prepublish": "npm test",
-    "test": "node tests/test_*.js",
+    "test": "node tests/run.js",
     "make": "npm test && npm run-script jsdoc",
     "jsdoc": "jsdoc -c jsdoc.json"
   },
