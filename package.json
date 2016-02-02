@@ -34,7 +34,7 @@
   "devDependencies": {
     "eslint": "^1.10.3",
     "eslint-config-airbnb": "^4.0.0",
-    "testjs": "latest"
+    "tape": "^4.4.0"
   },
   "license": "Apache-2.0",
   "engines": {
@@ -42,7 +42,7 @@
   },
   "scripts": {
     "prepublish": "npm test",
-    "test": "node node_modules/testjs/bin/testjs tests/suite.js",
+    "test": "node tests/test_*.js",
     "make": "npm test && npm run-script jsdoc",
     "jsdoc": "jsdoc -c jsdoc.json"
   },
