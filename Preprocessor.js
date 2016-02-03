@@ -385,7 +385,7 @@
               include = Preprocessor.evaluate(defines, match2[2]);
             }
             stack.push(p = {
-              'include': !before['include'],
+              'include': include,
               'index': Preprocessor.EXPR.lastIndex,
               'lastIndex': Preprocessor.EXPR.lastIndex
             });
