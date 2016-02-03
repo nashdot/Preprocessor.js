@@ -22,7 +22,7 @@ Directives
  console.log("Not including extension");
  // #endif
  ```
- 
+
 * Inverse static conditions:
 
  ```javascript
@@ -33,9 +33,9 @@ Directives
  // #include "path/to/extension.js"
  // #endif
  ```
- 
+
 * Evaluable conditions:
- 
+
  ```javascript
  // #if 1==2
  console.log("1==2");
@@ -51,7 +51,7 @@ Directives
  // #define function RADTODEG(x){return x*180/PI}
  var angle = // #put RADTODEG(3)+";"
  ```
- 
+
 * Writing the result of evaluated expressions:
 
   ```javascript
@@ -59,14 +59,14 @@ Directives
   var str = // #put "\"Hello world!\";"
   var onePlusOne = // #put (1+1)+";"
   ```
- 
+
 Features
 --------
 * [CommonJS](http://www.commonjs.org/) compatible
 * [RequireJS](http://requirejs.org/)/AMD compatible
 * [node.js](http://nodejs.org) compatible, also available via [npm](https://npmjs.org/package/preprocessor.js)
 * Fully documented using [jsdoc3](https://github.com/jsdoc3/jsdoc)
-* Well tested through [nodeunit](https://github.com/caolan/nodeunit)
+* Well tested through [tape](https://github.com/substack/tape)
 * Zero production dependencies
 * Small footprint
 
