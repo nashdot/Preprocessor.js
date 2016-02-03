@@ -15,4 +15,7 @@ require('./test_09_02.js');
 require('./test_10_01.js');
 require('./test_10_02.js');
 require('./test_10_03.js');
+require('./test_11_01.js');
+require('./test_11_02.js');
+require('./test_11_03.js');
 require('./test_12.js');

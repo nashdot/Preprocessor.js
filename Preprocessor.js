@@ -98,6 +98,12 @@
   Preprocessor.EXPR = /([ ]*)\/\/[ ]+#(include_once|include|ifn?def|if|endif|else|elif|put|define)/g;
 
   /**
+   * #* EXPRESSION
+   * @type {!RegExp}
+   */
+  Preprocessor.ALL = /([^\r\n]*)\r?(?:\n|$)/;
+
+  /**
    * #include "path/to/file". Requires node.js' "fs" module.
    * @type {!RegExp}
    */
@@ -237,10 +243,32 @@
     verbose = typeof verbose === 'function' ? verbose : function() {};
     verbose('Defines: ' + JSON.stringify(defines));
 
-    var match, match2, include, p, stack = [];
+    var match, match2, include, p, stack = [], before;
+    var isSkip = false;
+
     while ((match = Preprocessor.EXPR.exec(this.source)) !== null) {
       verbose(match[2] + ' @ ' + match.index + '-' + Preprocessor.EXPR.lastIndex);
       var indent = match[1];
+
+      if (isSkip && stack.length > 0 && match[2] !== 'endif' && match[2] !== 'else' && match[2] !== 'elif') {
+        before = stack.pop();
+        verbose('  pop (' + stack.length + '): ' + JSON.stringify(before));
+
+        Preprocessor.ALL.lastIndex = match.index;
+        if ((match2 = Preprocessor.ALL.exec(this.source)) === null) {
+          throw (new Error('Illegal #' + match[2] + ': ' +
+            this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
+        }
+
+        stack.push(p = {
+          'include': before['include'],
+          'index': before['index'],
+          'lastIndex': Preprocessor.ALL.lastIndex
+        });
+        verbose('  push (' + stack.length + '): ' + JSON.stringify(p));
+        continue;
+      }
+
       switch (match[2]) {
         case 'include_once':
         case 'include':
@@ -324,28 +352,29 @@
           } else {
             include = Preprocessor.evaluate(defines, match2[2]);
           }
-          verbose('  value: ' + include);
+          isSkip = !include;
+          verbose('  value: ' + include + ', isSkip: ' + isSkip);
           stack.push(p = {
             'include': include,
             'index': match.index,
             'lastIndex': Preprocessor.IF.lastIndex
           });
-          verbose('  push: ' + JSON.stringify(p));
+          verbose('  push (' + stack.length + '): ' + JSON.stringify(p));
           break;
         case 'endif':
         case 'else':
         case 'elif':
           Preprocessor.ENDIF.lastIndex = match.index;
           if ((match2 = Preprocessor.ENDIF.exec(this.source)) === null) {
-            throw (new Error('Illegal #' + match[2] + ': ' +
+            throw (new Error('Illegal #' + match[2] + ': "' +
               this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
           if (stack.length === 0) {
-            throw (new Error('Unexpected #' + match2[1] + ': ' +
+            throw (new Error('Unexpected #' + match2[1] + ': "' +
               this.source.substring(match.index, match.index + this.errorSourceAhead) + '...'));
           }
-          var before = stack.pop();
-          verbose('  pop: ' + JSON.stringify(before));
+          before = stack.pop();
+          verbose('  pop (' + stack.length + '): ' + JSON.stringify(before));
 
           if (this.preserveLineNumbers) {
             include = this.source.substring(before['index'], before['lastIndex']).replace(NOT_LINE_ENDING, '') +
@@ -376,6 +405,7 @@
           if (this.source === '') {
             verbose('  result empty');
           }
+          isSkip = false;
           Preprocessor.EXPR.lastIndex = before['index'] + include.length;
           verbose('  continue at ' + Preprocessor.EXPR.lastIndex);
           if (match2[1] === 'else' || match2[1] === 'elif') {
@@ -384,12 +414,14 @@
             } else {
               include = Preprocessor.evaluate(defines, match2[2]);
             }
+            isSkip = !include;
+            verbose('  isSkip: ' + isSkip);
             stack.push(p = {
               'include': include,
               'index': Preprocessor.EXPR.lastIndex,
               'lastIndex': Preprocessor.EXPR.lastIndex
             });
-            verbose('  push: ' + JSON.stringify(p));
+            verbose('  push (' + stack.length + '): ' + JSON.stringify(p));
           }
           break;
         case 'define':
@@ -451,7 +483,7 @@
       }
     }
     if (stack.length > 0) {
-      verbose('Still on stack: ' + JSON.stringify(stack.pop()));
+      verbose('Still on stack (' + stack.length + '): ' + JSON.stringify(stack.pop()));
     }
     return this.source;
   };
